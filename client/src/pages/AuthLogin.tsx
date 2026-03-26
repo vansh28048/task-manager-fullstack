@@ -15,7 +15,7 @@ const Login: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const res = await axios.post("http://localhost:4000/auth/login", {
+      const res = await axios.post("https://task-manager-fullstack-jqwv.onrender.com/auth/login", {
         email,
         password,
       });

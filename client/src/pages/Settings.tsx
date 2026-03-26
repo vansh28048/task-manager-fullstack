@@ -28,7 +28,7 @@ const Settings = () => {
   useEffect(() => {
   const fetchProfile = async () => {
     try {
-      const res = await axios.get("http://localhost:4000/user/profile", {
+      const res = await axios.get("https://task-manager-fullstack-jqwv.onrender.com/user/profile", {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -45,7 +45,7 @@ const Settings = () => {
 
       if (res.data.profileImage) {
         setPreview(
-          `http://localhost:4000/uploads/${res.data.profileImage}`
+          `https://task-manager-fullstack-jqwv.onrender.com/uploads/${res.data.profileImage}`
         );
       }
     } catch (err) {
@@ -66,7 +66,7 @@ const Settings = () => {
       if (form.profilePic) {
         formData.append("profileImage", form.profilePic);
       }
-      await axios.put("http://localhost:4000/user/profile", formData, {
+      await axios.put("https://task-manager-fullstack-jqwv.onrender.com/user/profile", formData, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },

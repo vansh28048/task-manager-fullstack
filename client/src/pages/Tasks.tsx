@@ -76,7 +76,7 @@ function Tasks() {
       try {
         const token = localStorage.getItem("token");
 
-        let url = "http://localhost:4000/tasks";
+        let url = "https://task-manager-fullstack-jqwv.onrender.com/tasks";
         if (filter === "completed") {
           url += "?completed=true";
         } else if (filter === "incomplete") {
@@ -107,7 +107,7 @@ function Tasks() {
     );
     if (!confirmed) return;
     try {
-      await axios.delete(`http://localhost:4000/tasks/${_id}`, {
+      await axios.delete(`https://task-manager-fullstack-jqwv.onrender.com/tasks/${_id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -124,7 +124,7 @@ function Tasks() {
     setLoading(true);
     setShowEditModal(false);
     try {
-      const res = await axios.get(`http://localhost:4000/tasks/${_id}`, {
+      const res = await axios.get(`https://task-manager-fullstack-jqwv.onrender.com/tasks/${_id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -153,7 +153,7 @@ function Tasks() {
     setLoading(true);
     try {
       const res = await axios.put(
-        `http://localhost:4000/tasks/${editTask._id}`,
+        `https://task-manager-fullstack-jqwv.onrender.com/tasks/${editTask._id}`,
         {
           title: editTask.title,
           description: editTask.description,

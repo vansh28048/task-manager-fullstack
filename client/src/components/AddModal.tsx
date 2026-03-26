@@ -28,7 +28,7 @@ const AddModal: React.FC<AddModalProps> = ({
     if (!newTask.title.trim()) return;
     setAdding(true);
     try {
-      const res = await fetch("http://localhost:4000/tasks", {
+      const res = await fetch("https://task-manager-fullstack-jqwv.onrender.com/tasks", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

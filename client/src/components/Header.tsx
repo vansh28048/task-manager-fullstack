@@ -11,7 +11,7 @@ const Header: React.FC = () => {
   useEffect(() => {
     if (isLoggedIn) {
       axios
-        .get("http://localhost:4000/user/profile", {
+        .get("https://task-manager-fullstack-jqwv.onrender.com/user/profile", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },
@@ -22,7 +22,7 @@ const Header: React.FC = () => {
             const imgPath = res.data.profileImage.startsWith("uploads/")
               ? res.data.profileImage
               : `uploads/${res.data.profileImage}`;
-            setProfileImage(`http://localhost:4000/${imgPath}`);
+            setProfileImage(`https://task-manager-fullstack-jqwv.onrender.com/${imgPath}`);
           } else {
             setProfileImage("");
           }
