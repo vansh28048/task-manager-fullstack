@@ -13,7 +13,7 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await axios.get("https://task-manager-fullstack-jqwv.onrender.com/tasks/stats", {
+        const res = await axios.get("http://localhost:4000/tasks/stats", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem("token")}`,
           },

@@ -42,7 +42,7 @@ const AuthRegister: React.FC = () => {
       if (profileImage) {
         formData.append("profileImage", profileImage);
       }
-      await axios.post("https://task-manager-fullstack-jqwv.onrender.com/auth/register", formData, {
+      await axios.post("http://localhost:4000/auth/register", formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       setSuccess("Registration successful! You can now log in.");
