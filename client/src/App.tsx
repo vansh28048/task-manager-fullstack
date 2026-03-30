@@ -1,5 +1,6 @@
 import "./App.css";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./context/AuthContext";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Tasks from "./pages/Tasks";
@@ -11,6 +12,7 @@ import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
+    <AuthProvider>
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
@@ -24,6 +26,7 @@ function App() {
         <Route path="/register" element={<AuthRegister />} />
       </Routes>
     </BrowserRouter>
+    </AuthProvider>
   );
 }
 

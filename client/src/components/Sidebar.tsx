@@ -3,9 +3,8 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { FiHome, FiSettings } from "react-icons/fi";
 import { FaTasks } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
-//  FiUsers,
-
 import { toast } from "react-toastify";
+import { useAuth } from "../context/AuthContext";
 
 type SidebarItem = {
   label: string;
@@ -14,68 +13,58 @@ type SidebarItem = {
 };
 
 const menuItems: SidebarItem[] = [
-  {
-    label: "Home",
-    path: "/",
-    icon: <FiHome />,
-  },
-  {
-    label: "Dashboard",
-    path: "/dashboard",
-    icon: <MdDashboard />,
-  },
-  {
-    label: "Tasks",
-    path: "/tasks",
-    icon: <FaTasks />,
-  },
-  {
-    label: "Settings",
-    path: "/settings",
-    icon: <FiSettings />,
-  },
+  { label: "Home", path: "/", icon: <FiHome /> },
+  { label: "Dashboard", path: "/dashboard", icon: <MdDashboard /> },
+  { label: "Tasks", path: "/tasks", icon: <FaTasks /> },
+  { label: "Settings", path: "/settings", icon: <FiSettings /> },
 ];
 
 const Sidebar: React.FC = () => {
   const navigate = useNavigate();
-  const isLoggedIn = Boolean(localStorage.getItem("token"));
-  // const userName = localStorage.getItem("name");
+
+  // BEFORE: const isLoggedIn = Boolean(localStorage.getItem("token"));
+  // AFTER:  pulled from context — single source of truth
+  const { isLoggedIn, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("name");
+    // BEFORE: manually clearing localStorage + navigating
+    // AFTER:  logout() clears token + user state in one call
+    logout();
     toast.success("Logged out successfully!");
-    setTimeout(() => {
-      navigate("/");
-    }, 1000);
+    setTimeout(() => navigate("/"), 1000);
   };
 
   return (
-    <aside className="w-64 h-full sticky top-20 bg-white text-blue-900 flex flex-col rounded-2xl shadow-lg">
-      {/* Menu */}
-      <nav className="flex-1 p-4 space-y-2">
+    <aside className="w-60 min-h-[calc(100vh-56px)] bg-white border-r border-gray-100 flex flex-col">
+      <nav className="flex-1 p-4 space-y-1">
         {menuItems.map((item) => (
           <NavLink
             key={item.path}
             to={item.path}
             className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-3 rounded-lg transition font-semibold text-blue-950
-               ${isActive ? "bg-blue-100  shadow" : ""}`
+              `flex items-center gap-3 px-4 py-2.5 rounded-lg transition text-sm font-medium
+               ${
+                 isActive
+                   ? "bg-blue-50 text-blue-600"
+                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-800"
+               }`
             }
           >
-            <span className="text-xl">{item.icon}</span>
+            <span className="text-lg">{item.icon}</span>
             <span>{item.label}</span>
           </NavLink>
         ))}
-        {isLoggedIn && (
+      </nav>
+      {isLoggedIn && (
+        <div className="p-4 border-t border-gray-100">
           <button
             onClick={handleLogout}
-            className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-semibold transition shadow-sm cursor-pointer"
+            className="w-full text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 px-4 py-2.5 rounded-lg transition cursor-pointer"
           >
             Logout
           </button>
-        )}
-      </nav>
+        </div>
+      )}
     </aside>
   );
 };

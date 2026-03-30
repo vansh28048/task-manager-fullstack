@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import { API_URL } from "../config/api";
 
 const AuthRegister: React.FC = () => {
   const [name, setName] = useState("");
@@ -42,20 +43,20 @@ const AuthRegister: React.FC = () => {
       if (profileImage) {
         formData.append("profileImage", profileImage);
       }
-      await axios.post("http://localhost:4000/auth/register", formData, {
+      await axios.post(`${API_URL}/auth/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-      setSuccess("Registration successful! You can now log in.");
+      setSuccess("Registration successful! Redirecting to login...");
       setName("");
       setEmail("");
       setPassword("");
       setConfirmPassword("");
       setProfileImage(null);
       setPreview(null);
-      navigate("/login");
+      setTimeout(() => navigate("/login"), 1500);
     } catch (err: any) {
       setError(
-        err.response?.data?.message || "Registration failed. Please try again."
+        err.response?.data?.message || "Registration failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -63,67 +64,110 @@ const AuthRegister: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-linear-to-br from-blue-50 via-white to-purple-100 relative">
-      <div className="absolute inset-0 pointer-events-none select-none">
-        <svg width="100%" height="100%" className="absolute inset-0" style={{ opacity: 0.08 }}>
-          <defs>
-            <linearGradient id="bg-gradient" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0%" stopColor="#6366f1" />
-              <stop offset="100%" stopColor="#a21caf" />
-            </linearGradient>
-          </defs>
-          <circle cx="80%" cy="20%" r="180" fill="url(#bg-gradient)" />
-          <circle cx="20%" cy="80%" r="120" fill="url(#bg-gradient)" />
-        </svg>
-      </div>
-      <div className="relative z-10 w-full max-w-md mx-auto bg-white rounded-2xl shadow-2xl px-8 py-10 flex flex-col items-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-md mx-auto bg-white rounded-2xl shadow-sm border border-gray-100 px-8 py-10">
         <div className="mb-8 flex flex-col items-center">
-          <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center mb-2 shadow-md">
-            <svg width="32" height="32" fill="none" viewBox="0 0 24 24"><path fill="#6366f1" d="M12 2a7 7 0 0 0-7 7v2.18A3 3 0 0 0 3 14v2a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-2a3 3 0 0 0-2-2.82V9a7 7 0 0 0-7-7Zm0 2a5 5 0 0 1 5 5v2H7V9a5 5 0 0 1 5-5Zm-7 10a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-2Zm2 5a1 1 0 0 1-1-1v-1h14v1a1 1 0 0 1-1 1H6Z"/></svg>
+          <div className="w-14 h-14 rounded-2xl bg-blue-600 flex items-center justify-center mb-4 shadow-sm">
+            <svg width="28" height="28" fill="none" viewBox="0 0 24 24">
+              <path
+                d="M8 12h8M12 8v8"
+                stroke="#fff"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+            </svg>
           </div>
-          <h2 className="text-3xl font-extrabold text-gray-800 mb-1 tracking-tight">Create your account</h2>
-          <p className="text-gray-500 text-sm">Sign up to get started with our platform.</p>
+          <h2 className="text-2xl font-bold text-gray-800 mb-1">
+            Create your account
+          </h2>
+          <p className="text-gray-500 text-sm">
+            Sign up to get started with TaskManager
+          </p>
         </div>
         {error && (
-          <div className="mb-4 w-full text-red-600 text-center bg-red-50 border border-red-200 rounded px-3 py-2 text-sm">{error}</div>
+          <div className="mb-4 w-full text-red-600 text-center bg-red-50 border border-red-200 rounded-lg px-3 py-2 text-sm">
+            {error}
+          </div>
         )}
         {success && (
-          <div className="mb-4 w-full text-green-700 text-center bg-green-50 border border-green-200 rounded px-3 py-2 text-sm">{success}</div>
+          <div className="mb-4 w-full text-green-700 text-center bg-green-50 border border-green-200 rounded-lg px-3 py-2 text-sm">
+            {success}
+          </div>
         )}
-        <form onSubmit={handleSubmit} className="w-full flex flex-col gap-5" encType="multipart/form-data">
-                    <div>
-                      <label className="block mb-1 font-medium text-gray-700">Profile Image</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
-                      />
-                      {preview && (
-                        <img
-                          src={preview}
-                          alt="Profile Preview"
-                          className="mt-2 w-20 h-20 rounded-full object-cover border"
-                        />
-                      )}
-                    </div>
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-4"
+          encType="multipart/form-data"
+        >
+          <div className="flex justify-center">
+            <div className="relative">
+              <img
+                src={
+                  preview ||
+                  "https://ui-avatars.com/api/?name=" +
+                    encodeURIComponent(name || "User") +
+                    "&background=dbeafe&color=2563eb"
+                }
+                alt="Profile Preview"
+                className="w-20 h-20 rounded-full object-cover border-4 border-gray-100"
+              />
+              <input
+                id="registerProfilePic"
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() =>
+                  document.getElementById("registerProfilePic")?.click()
+                }
+                className="absolute bottom-0 right-0 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-1.5 shadow-md transition"
+                aria-label="Upload profile picture"
+              >
+                <svg
+                  className="w-3 h-3"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Name</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Name
+            </label>
             <input
               type="text"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
               autoFocus
-              placeholder="Your Name"
+              placeholder="Your name"
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Email</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Email
+            </label>
             <input
               type="email"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
@@ -131,38 +175,58 @@ const AuthRegister: React.FC = () => {
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Password</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Password
+            </label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
-              placeholder="••••••••"
+              placeholder="Create a password"
             />
           </div>
           <div>
-            <label className="block mb-1 font-medium text-gray-700">Confirm Password</label>
+            <label className="block mb-1 text-sm font-medium text-gray-700">
+              Confirm Password
+            </label>
             <input
               type="password"
-              className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 transition"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
-              placeholder="••••••••"
+              placeholder="Confirm your password"
             />
-          </div>
-          <div className="flex items-center justify-between text-sm">
-            <a href="/login" className="text-blue-600 hover:underline">Already have an account?</a>
           </div>
           <button
             type="submit"
-            className="w-full bg-linear-to-r from-blue-600 to-purple-600 text-white py-2.5 rounded-lg font-semibold shadow-md hover:from-blue-700 hover:to-purple-700 transition text-lg mt-2"
+            className="w-full bg-blue-600 text-white py-2.5 rounded-lg font-medium shadow-sm hover:bg-blue-700 transition text-base mt-2"
             disabled={loading}
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path></svg>
+                <svg
+                  className="animate-spin h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8v8z"
+                  />
+                </svg>
                 Creating account...
               </span>
             ) : (
@@ -170,6 +234,15 @@ const AuthRegister: React.FC = () => {
             )}
           </button>
         </form>
+        <p className="text-center text-sm text-gray-500 mt-6">
+          Already have an account?{" "}
+          <Link
+            to="/login"
+            className="text-blue-600 font-medium hover:underline"
+          >
+            Sign in
+          </Link>
+        </p>
       </div>
     </div>
   );

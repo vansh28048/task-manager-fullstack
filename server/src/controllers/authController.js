@@ -22,8 +22,10 @@ const register = async (req, res) => {
     }
 
     const user = await User.create({
-      ...req.body,
+      name,
+      email,
       password: hashedPassword,
+      profileImage,
     });
 
     const userObj = user.toObject();
@@ -57,7 +59,7 @@ const login = async (req, res) => {
     const accessToken = jwt.sign(
       { userId: user._id },
       process.env.ACCESS_TOKEN_SECRET,
-      // { expiresIn: "15m" },
+      { expiresIn: "7d" },
     );
 
     const refreshToken = jwt.sign(

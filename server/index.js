@@ -9,7 +9,12 @@ const userRoutes = require("./src/routes/userRoutes");
 const cors = require("cors");
 
 const app = express();
-app.use(cors()); // Allow cross-origin requests
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:5175",
+    credentials: true,
+  })
+);
 app.use(express.json());
 
 mongoose
@@ -18,7 +23,8 @@ mongoose
   .catch((err) => console.log(err)); 
 
 //Routes
-app.use("/uploads", express.static("uploads"));
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "src/uploads")));
 app.use("/tasks", taskRoutes);
 app.use("/auth", authRoutes);
 app.use("/user", userRoutes);

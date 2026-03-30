@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
   if (!authHeader) {
     return res
       .status(401)
-      .json({ message: "authorization nahi hai, pehle jao or token leke aao" });
+      .json({ message: "Authorization required. Please log in." });
   }
 
   const token = authHeader.split(" ")[1];
@@ -16,7 +16,7 @@ const authMiddleware = (req, res, next) => {
     req.user = decoded;
     next();
   } catch (err) {
-    res.status(401).json({ message: "Token invalid hai, phir se login karo" });
+    res.status(401).json({ message: "Invalid or expired token. Please log in again." });
   }
 };
 module.exports = authMiddleware;
